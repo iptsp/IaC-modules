@@ -118,7 +118,6 @@ variable "ip_address" {
 variable "cidr" {
   description = "CIDR for netmask formation. two digits ex. 10.11.39.0/XX  XX=16"
   type        = number
-  default = 16
 }
 
 variable "vsphere_network_gateway" {
