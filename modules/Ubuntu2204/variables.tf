@@ -1,5 +1,14 @@
 #variables.tf
 
+variable "vault_address" {
+  description = "Hashicorp Vault FQDN and port"
+}
+
+variable "vault_token" {
+  description = "role-id token"
+  sensitive = true
+}
+
 variable "vsphere_server" {
   description = "vCenter server FQDN or IP"
   

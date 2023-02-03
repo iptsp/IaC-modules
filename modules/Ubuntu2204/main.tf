@@ -1,6 +1,44 @@
+#Vault init
+
+provider "vault" {
+  
+  address  = var.vault_address
+  auth_login {
+    path = "auth/approle/login"
+    
+    parameters = {
+      role_id   = var.role_id
+      
+    }
+  }
+}
+
+
+
+##### Data sources
+
+data "vault_approle_auth_backend_role_id" "terraform" {
+  backend   = "approle"
+  role_name = "terraform"
+}
+
+resource "vault_approle_auth_backend_login" "login" {
+  backend   = "approle"
+  role_id   = data.vault_approle_auth_backend_role_id.terraform.role_id
+  
+}
+
+#Reading vmware secret
+
+data "vault_kv_secret_v2" "vcenter" {
+  mount     = "vmware"
+  name      = "vcenter"
+}
+
+
 provider "vsphere" {
-  user                = var.vsphere_user
-  password            = var.vsphere_password
+  user                = nonsensitive(data.vault_kv_secret_v2.vcenter.data["user"])
+  password            = nonsensitive(data.vault_kv_secret_v2.vcenter.data["password"])
   vsphere_server      = var.vsphere_server
 
   # If you have a self-signed cert

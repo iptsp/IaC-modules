@@ -6,5 +6,9 @@ terraform {
       source  = "hashicorp/vsphere"
       version = "1.24.3"
     }
+      vault = {
+      source  = "hashicorp/vault"
+      version = ">=2.7"
+    }
   }
 }
