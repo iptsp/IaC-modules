@@ -4,7 +4,7 @@ variable "vault_address" {
   description = "Hashicorp Vault FQDN and port"
 }
 
-variable "vault_token" {
+variable "role_id" {
   description = "role-id token"
   sensitive = true
 }

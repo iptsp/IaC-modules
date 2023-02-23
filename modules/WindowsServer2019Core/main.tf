@@ -35,12 +35,10 @@ data "vault_kv_secret_v2" "vcenter" {
   name      = "vcenter"
 }
 
-data "vault_kv_secret_v2" "linux_user" {
-  mount     = "servers/linux"
+data "vault_kv_secret_v2" "user_credentials" {
+  mount     = "servers/Windows"
   name      = "build"
 }
-
-
 
 provider "vsphere" {
   user                = nonsensitive(data.vault_kv_secret_v2.vcenter.data["user"])
@@ -77,7 +75,7 @@ data "vsphere_datastore" "datastore" {
 }
 
 
-resource "vsphere_virtual_machine" "ubuntu2204" {
+resource "vsphere_virtual_machine" "Win2019StdCore" {
   
   name                       = "${var.vm_name}"
   num_cpus                   = "${var.vm_cpus}"
@@ -101,9 +99,9 @@ resource "vsphere_virtual_machine" "ubuntu2204" {
   clone {
     template_uuid            = data.vsphere_virtual_machine.template.id
     customize {
-      linux_options {
-        host_name            = "${var.vm_name}"
-        domain               = "${var.domain}"
+      windows_options {
+        computer_name        = "${var.vm_name}"
+        admin_password       = nonsensitive(data.vault_kv_secret_v2.vcenter.data["password"])
       }
       network_interface {
         ipv4_address         = "${var.ip_address}"
