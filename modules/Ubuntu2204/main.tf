@@ -38,6 +38,8 @@ data "vault_kv_secret_v2" "vcenter" {
 data "vault_kv_secret_v2" "linux_user" {
   mount     = "servers/linux"
   name      = "build"
+  
+  
 }
 
 

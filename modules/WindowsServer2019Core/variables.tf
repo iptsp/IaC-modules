@@ -14,6 +14,36 @@ variable "vsphere_server" {
   
 }
 
+#vm settings# Virtual Machine Settings
+
+
+
+variable "vm_cpus" {
+  description = "Number of CPUs"  
+  type        = number
+  default     = 4
+}
+
+variable "vm_memory" {
+  description = "Memory in MB"
+  type        = number
+  default      = 8196
+
+}
+
+variable "vm_disk_size" {
+  description = "Disk size in GB"
+  type        = number
+  default     = 100
+}
+
+variable "vsphere_network" {
+  description = "vSphere network"
+  type        = string
+  
+}
+
+
 
 #VM Location
 
@@ -38,3 +68,52 @@ variable "datastore" {
   type        = string
 }
 
+
+
+variable "vsphere_template" {
+  description = "vSphere template which will be used to create the VM"
+  type        = string
+  default     = "WindowsServer2019Core"
+}
+
+
+
+# VM customization
+
+variable "vm_name" {
+  description = "New VM's Name"
+  type        = string
+  
+}
+
+variable "domain" {
+  description = "Domain name"
+  type        = string
+  
+}
+
+variable "ip_address" {
+  description = "VM Ipv4 Address"
+  type        = string
+  
+}
+
+variable "network_mask" {
+  description = "CIDR for netmask formation. two digits ex. 10.11.39.0/XX  XX=network mask"
+  type        = number
+  default     = "16"
+}
+
+variable "vsphere_network_gateway" {
+  description = "vSphere network gateway"
+  type        = string
+  
+}
+
+
+
+variable "dns_servers_list" {
+  description = "DNS server list format ['xxx.xxx.xxx.xxx',xx.xx.xx.xx' ]"
+  type        = list
+  
+}

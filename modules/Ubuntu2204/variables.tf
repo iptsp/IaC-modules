@@ -14,15 +14,6 @@ variable "vsphere_server" {
   
 }
 
-variable "vsphere_user" {
-  description = "vSphere username to use to connect to the environment"
-  sensitive   = true
-}
-
-variable "vsphere_password" {
-  description = "vSphere password"
-  sensitive   = true
-}
 
 variable "ubuntu_user" {
   description = "Username to use to connect ssh and run provisioning shell "

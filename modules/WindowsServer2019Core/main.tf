@@ -4,6 +4,7 @@ provider "vault" {
   
   address  = var.vault_address
   auth_login {
+    
     path = "auth/approle/login"
     
     parameters = {
@@ -105,7 +106,7 @@ resource "vsphere_virtual_machine" "Win2019StdCore" {
       }
       network_interface {
         ipv4_address         = "${var.ip_address}"
-        ipv4_netmask         = "${var.cidr}"
+        ipv4_netmask         = "${var.network_mask}"
         
       }
       dns_server_list       = "${var.dns_servers_list}"
