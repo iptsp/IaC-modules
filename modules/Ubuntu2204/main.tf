@@ -24,7 +24,7 @@ data "vault_approle_auth_backend_role_id" "terraform" {
 
 resource "vault_approle_auth_backend_login" "login" {
   backend   = "approle"
-  role_id   = data.vault_approle_auth_backend_role_id.terraform.role_id
+  role_id   = var.role_id
   
 }
 

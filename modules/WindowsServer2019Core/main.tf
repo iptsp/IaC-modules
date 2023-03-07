@@ -18,14 +18,18 @@ provider "vault" {
 
 ##### Data sources
 
-data "vault_approle_auth_backend_role_id" "terraform" {
-  backend   = "approle"
-  role_name = "terraform"
-}
+#data "vault_approle_auth_backend_role_id" "terraform" {
+##  backend   = "approle"
+#  role_name = "terraform"
+#}
+
+#output "role-id" {
+#  value = data.vault_approle_auth_backend_role_id.terraform.role_id
+#}
 
 resource "vault_approle_auth_backend_login" "login" {
   backend   = "approle"
-  role_id   = data.vault_approle_auth_backend_role_id.terraform.role_id
+  role_id   = var.role_id #data.vault_approle_auth_backend_role_id.terraform.role_id
   
 }
 
@@ -85,6 +89,7 @@ resource "vsphere_virtual_machine" "Win2019StdCore" {
   resource_pool_id           = data.vsphere_compute_cluster.cluster.resource_pool_id
   datastore_id               = data.vsphere_datastore.datastore.id
   guest_id                   = data.vsphere_virtual_machine.template.guest_id
+  scsi_type                  = data.vsphere_virtual_machine.template.scsi_type
   
   
   disk {
