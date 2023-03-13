@@ -29,7 +29,7 @@ provider "vault" {
 
 resource "vault_approle_auth_backend_login" "login" {
   backend   = "approle"
-  role_id   = var.role_id #data.vault_approle_auth_backend_role_id.terraform.role_id
+  role_id   = var.role_id 
   
 }
 
@@ -40,10 +40,11 @@ data "vault_kv_secret_v2" "vcenter" {
   name      = "vcenter"
 }
 
-data "vault_kv_secret_v2" "user_credentials" {
-  mount     = "servers/Windows"
-  name      = "build"
+data "vault_kv_secret_v2" "win_credentials" {
+  mount     = "servers"
+  name      = "Windows/build"
 }
+
 
 provider "vsphere" {
   user                = nonsensitive(data.vault_kv_secret_v2.vcenter.data["user"])
@@ -106,8 +107,11 @@ resource "vsphere_virtual_machine" "Win2019StdCore" {
     template_uuid            = data.vsphere_virtual_machine.template.id
     customize {
       windows_options {
-        computer_name        = "${var.vm_name}"
-        admin_password       = nonsensitive(data.vault_kv_secret_v2.vcenter.data["password"])
+        computer_name         = "${var.vm_name}"
+        admin_password        = nonsensitive(data.vault_kv_secret_v2.win_credentials.data["password"])
+        join_domain           = "${var.domain}"
+        domain_admin_user     = nonsensitive(data.vault_kv_secret_v2.win_credentials.data["domain_user"])
+        domain_admin_password = nonsensitive(data.vault_kv_secret_v2.win_credentials.data["domain_password"])
       }
       network_interface {
         ipv4_address         = "${var.ip_address}"
