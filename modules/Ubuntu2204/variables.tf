@@ -15,17 +15,17 @@ variable "vsphere_server" {
 }
 
 
-#variable "ubuntu_user" {
-#  description = "Username to use to connect ssh and run provisioning shell "
-#  type        = string
-#  sensitive   = true
-#}
+variable "sudo_new_user" {
+  description = "Novo usuario que será criado com privilégios sudo"
+  type        = string
+  sensitive   = true
+}
 
-#variable "ubuntu_password" {
-#  description = "Password to use to connect ssh and run provisioning shell "
-#  type        = string
-#  sensitive   = true
-#}
+variable "new_user_pass" {
+  description = "Password to use to connect ssh and run provisioning shell "
+  type        = string
+  sensitive   = true
+}
 
 
 #VM Location
