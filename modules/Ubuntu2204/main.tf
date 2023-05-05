@@ -131,8 +131,7 @@ resource "vsphere_virtual_machine" "ubuntu2204" {
   }
 
   provisioner "local-exec" {
-    command = "sudo apt-get update && sudo apt-get install -y ansible && pip install hvac && cd ansible && sleep 300 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook main.yml \
-   -i inventario/hosts -e \"sudo_new_user=${var.sudo_new_user} sudo_new_pass=${var.new_user_pass} \" " 
+    command = "sudo apt-get update && sudo apt-get install -y ansible && pip install hvac && cd ansible && sleep 300 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook main.yml -i inventario/hosts -e \"sudo_new_user=${var.sudo_new_user} sudo_new_pass=${var.new_user_pass} \" " 
   }
 
 
