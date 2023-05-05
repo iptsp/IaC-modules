@@ -15,11 +15,11 @@ variable "vsphere_server" {
 }
 
 
-variable "ubuntu_user" {
-  description = "Username to use to connect ssh and run provisioning shell "
-  type        = string
-  sensitive   = true
-}
+#variable "ubuntu_user" {
+#  description = "Username to use to connect ssh and run provisioning shell "
+#  type        = string
+#  sensitive   = true
+#}
 
 #variable "ubuntu_password" {
 #  description = "Password to use to connect ssh and run provisioning shell "
