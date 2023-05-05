@@ -1,0 +1,14 @@
+---
+ #tasks file for create-sudoers
+
+- name: Criando sudoers no Ubuntu ou Centos
+  include_tasks: ubuntu-and-centos.yml
+  when: ('Debian' not in ansible_distribution )
+  
+- name: alterando senha do root
+  user:
+    name: root
+    update_password: always
+    password: "{{ rootpassword|password_hash('sha512') }}"
+  when: (change_root_password is true)
+  

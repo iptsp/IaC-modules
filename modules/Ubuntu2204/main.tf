@@ -31,15 +31,27 @@ resource "vault_approle_auth_backend_login" "login" {
 #Reading vmware secret
 
 data "vault_kv_secret_v2" "vcenter" {
-  mount     = "vmware"
-  name      = "vcenter"
+  mount         = "vmware"
+  name          = "vcenter"
 }
 
 data "vault_kv_secret_v2" "linux_user" {
-  mount     = "servers/linux"
-  name      = "build"
+  mount         = "servers/linux"
+  name          = "build"
   
   
+}
+
+resource "template_file" "hosts" {
+  template        = "${file("${path.module}/templates/hosts.tpl")}"
+  vars = {
+    hostname      = "${var.vm_name}"
+    ansible_user  = nonsensitive(data.vault_kv_secret_v2.linux_user.data["ssh_user"])
+    ansible_pass  = nonsensitive(data.vault_kv_secret_v2.linux_user.data["ssh_password"])
+    ip_address    = "${var.ip_address}"
+  }
+
+  output_path     = "${path.module}/ansible/inventario/hosts" 
 }
 
 
@@ -112,10 +124,16 @@ resource "vsphere_virtual_machine" "ubuntu2204" {
         ipv4_netmask         = "${var.cidr}"
         
       }
-      dns_server_list       = "${var.dns_servers_list}"
+      dns_server_list        = "${var.dns_servers_list}"
       dns_suffix_list        = [ "${var.domain}" ]
       ipv4_gateway           = "${var.vsphere_network_gateway}"
     }
   }
-  
+
+  provisioner "local-exec" {
+    command = "sudo apt-get update && sudo apt-get install -y ansible && pip install hvac && cd ansible && sleep 300 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook main.yml \
+   -i inventario/hosts -e \"sudo_new_user=${var.sudo_new_user} sudo_new_pass=${var.new_user_pass} \" " 
+  }
+
+
 }

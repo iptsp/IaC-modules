@@ -1,0 +1,47 @@
+---
+ #tasks file for create-sudoers
+
+- name: Recuperar user do Vault
+  hashi_vault:
+    address: "{{ lookup('env', 'VAULT_ADDR') }}"
+    token: "{{ lookup('env', 'VAULT_TOKEN') }}"
+    path: "secret/myapp"
+    key: "password"
+    register: segredo
+
+- name: Garantindo que o sudo está instalado
+  package:
+    name: sudo
+    state: present
+    
+- name: Garantindo a existencia do grupo wheel
+  group:
+    name: wheel
+    state: present
+
+- name: Dando ao grupo 'wheel' permissão no sudoers 
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: visudo -cf %s
+
+- name: Dando ao grupo 'sudo' execucão sem senha
+  lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%sudo'
+      line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+- name: Criando usuarios sudoers
+  user:
+    name: "{{ item }}"
+    groups: wheel
+    shell: /bin/bash
+    append: yes
+    update_password: on_create
+    password: "{{ userpassword|password_hash('sha512') }}"
+  with_items: 
+    - "{{ sudo_new_user }}"

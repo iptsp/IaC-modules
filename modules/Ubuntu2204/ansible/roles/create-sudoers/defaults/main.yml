@@ -1,0 +1,3 @@
+---
+# defaults file for create-sudoers
+csti_super_user: iptnet
