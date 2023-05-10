@@ -16,17 +16,6 @@ provider "vault" {
 
 
 
-##### Data sources
-
-#data "vault_approle_auth_backend_role_id" "terraform" {
-##  backend   = "approle"
-#  role_name = "terraform"
-#}
-
-#output "role-id" {
-#  value = data.vault_approle_auth_backend_role_id.terraform.role_id
-#}
-
 resource "vault_approle_auth_backend_login" "login" {
   backend   = "approle"
   role_id   = var.role_id 

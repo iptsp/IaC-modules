@@ -1,14 +1,5 @@
 ---
  #tasks file for create-sudoers
-
-- name: Recuperar user do Vault
-  hashi_vault:
-    address: "{{ lookup('env', 'VAULT_ADDR') }}"
-    token: "{{ lookup('env', 'VAULT_TOKEN') }}"
-    path: "secret/myapp"
-    key: "password"
-    register: segredo
-
 - name: Garantindo que o sudo está instalado
   package:
     name: sudo
@@ -42,6 +33,6 @@
     shell: /bin/bash
     append: yes
     update_password: on_create
-    password: "{{ userpassword|password_hash('sha512') }}"
+    password: "{{ sudo_new_pass|password_hash('sha512') }}"
   with_items: 
     - "{{ sudo_new_user }}"

@@ -35,23 +35,23 @@ data "vault_kv_secret_v2" "vcenter" {
   name          = "vcenter"
 }
 
-data "vault_kv_secret_v2" "linux_user" {
-  mount         = "servers/linux"
-  name          = "build"
-  
-  
+data "vault_kv_secret_v2" "linux_credentials" {
+  mount         = "servers"
+  name          = "linux/build" 
 }
 
-resource "template_file" "hosts" {
-  template        = "${file("${path.module}/templates/hosts.tpl")}"
-  vars = {
-    hostname      = "${var.vm_name}"
-    ansible_user  = nonsensitive(data.vault_kv_secret_v2.linux_user.data["ssh_user"])
-    ansible_pass  = nonsensitive(data.vault_kv_secret_v2.linux_user.data["ssh_password"])
+
+resource "local_file" "hosts" {
+  content = templatefile("${path.module}/templates/hosts.tpl",
+  {
+    vm_name       = "${var.vm_name}"
+    ansible_user  = nonsensitive(data.vault_kv_secret_v2.linux_credentials.data["ssh_user"])
+    ansible_pass  = nonsensitive(data.vault_kv_secret_v2.linux_credentials.data["ssh_password"])
     ip_address    = "${var.ip_address}"
   }
+  )
 
-  output_path     = "${path.module}/ansible/inventario/hosts" 
+  filename        = "${path.module}/ansible/inventario/hosts" 
 }
 
 
@@ -105,7 +105,7 @@ resource "vsphere_virtual_machine" "ubuntu2204" {
   disk {
     label                    = "disk0"
     size                     = data.vsphere_virtual_machine.template.disks.0.size
-    thin_provisioned         = false
+    thin_provisioned         = true
   }
 
   network_interface {
@@ -130,8 +130,10 @@ resource "vsphere_virtual_machine" "ubuntu2204" {
     }
   }
 
+  
   provisioner "local-exec" {
-    command = "sudo apt-get update && sudo apt-get install -y ansible && pip install hvac && cd ansible && sleep 300 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook main.yml -i inventario/hosts -e \"sudo_new_user=${var.sudo_new_user} sudo_new_pass=${var.new_user_pass} \" " 
+    command = "cd ansible && sleep 300 && ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook main.yml -i inventario/hosts -e \"sudo_new_user=${var.sudo_new_user} sudo_new_pass=${var.new_user_pass}\" -vvvv"
+    interpreter = ["/bin/bash", "-c"]
   }
 
 

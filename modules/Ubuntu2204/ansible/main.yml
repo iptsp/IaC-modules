@@ -5,11 +5,11 @@
 
   vars:
     sudoers:
-      - {{ sudo_new_user }}
+      - "{{ sudo_new_user }}"
     
     sudo_new_user_pass: "{{ new_user_pass }}"
-    become: yes
     change_root_password: false
+
   
   roles:
    - role: ../roles/create-sudoers

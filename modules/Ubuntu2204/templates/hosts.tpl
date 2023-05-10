@@ -1,7 +1,7 @@
 --- 
 all:
   children:
-    novos:
+    ubuntu:
       hosts:
         ${vm_name}:
           ansible_host: ${ip_address}
@@ -10,7 +10,4 @@ all:
           ansible_become_pass: ${ansible_pass}
           host_key_checking: False
        
-    padronizados:
-      hosts:
-        ${vm_name}:
-          host_key_checking: False
+   
