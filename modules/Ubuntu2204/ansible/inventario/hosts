@@ -1,0 +1,13 @@
+--- 
+all:
+  children:
+    ubuntu:
+      hosts:
+        Moodle-new:
+          ansible_host: 200.18.106.30
+          ansible_user: iptnet
+          ansible_password: Amp3reZepel!n
+          ansible_become_pass: Amp3reZepel!n
+          host_key_checking: False
+       
+   
